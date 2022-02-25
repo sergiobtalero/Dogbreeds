@@ -1,4 +1,11 @@
 name: DogBreeds
+packages:
+  Data:
+    path: Data
+  Domain: 
+    path: Domain
+  Injector: 
+    path: Injector
 targets:
   DogBreeds:
     type: application
