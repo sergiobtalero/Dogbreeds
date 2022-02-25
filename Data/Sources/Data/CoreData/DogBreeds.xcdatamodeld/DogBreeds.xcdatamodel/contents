@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21D49" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="DogBreedEntity" representedClassName=".DogBreed" syncable="YES">
+        <attribute name="name" attributeType="String"/>
+        <attribute name="subBreeds" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DogImageEntity" inverseName="breed" inverseEntity="DogImageEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="DogImageEntity" representedClassName="DogImageEntity" syncable="YES">
+        <attribute name="favorited" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="urlString" attributeType="String"/>
+        <relationship name="breed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DogBreedEntity" inverseName="images" inverseEntity="DogBreedEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="urlString"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <elements>
+        <element name="DogBreedEntity" positionX="-54" positionY="-9" width="128" height="74"/>
+        <element name="DogImageEntity" positionX="-54" positionY="9" width="128" height="74"/>
+    </elements>
+</model>

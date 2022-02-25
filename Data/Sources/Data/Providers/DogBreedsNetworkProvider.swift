@@ -20,9 +20,9 @@ public final class DogBreedsNetworkProvider {
 // MARK: - DogBreedsProviderContract
 extension DogBreedsNetworkProvider: DogBreedsNetworkProviderContract {
     public func fetchAllBreedsList() async {
+        let _ = CoreDataManager.shared
         do {
             let breedsDictionary: DogServiceResponse<[String: [String]]> = try await breedsService.request(endpoint: BreedsEndpoint.list)
-            print("Dictionary: \(breedsDictionary)")
         } catch {
             fatalError("Error: \(error.localizedDescription)")
         }
