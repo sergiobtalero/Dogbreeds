@@ -11,5 +11,12 @@ import CoreData
 
 @objc(DogBreedEntity)
 public class DogBreedEntity: NSManagedObject {
-
+    public static func createNew(name: String,
+                                 subBreeds: [String]?,
+                                 images: Set<DogImageEntity>?) {
+        let newEntity = DogBreedEntity(context: CoreDataManager.shared.viewContext)
+        newEntity.name = name
+        newEntity.subBreeds = subBreeds
+        newEntity.images = images
+    }
 }

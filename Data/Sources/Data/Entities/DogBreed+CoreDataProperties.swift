@@ -18,7 +18,7 @@ extension DogBreedEntity {
 
     @NSManaged public var name: String?
     @NSManaged public var subBreeds: [String]?
-    @NSManaged public var images: NSSet?
+    @NSManaged public var images: Set<DogImageEntity>?
 
 }
 

@@ -10,8 +10,6 @@ import CoreData
 
 public class CoreDataManager {
     public static var shared = CoreDataManager()
-    
-    private static let modelName = "DogBreeds"
     private let persistentContainer: NSPersistentContainer
     
     public var viewContext: NSManagedObjectContext {
@@ -23,21 +21,30 @@ public class CoreDataManager {
     }()
     
     // MARK: - Initializer
-    init() {
-        guard let url = Bundle.module.url(forResource: Self.modelName, withExtension: "momd"),
+    init(persistentContainer: NSPersistentContainer = mainContainer) {
+        self.persistentContainer = persistentContainer
+    }
+}
+
+// MARK: - Private extension
+extension CoreDataManager {
+    static let mainContainer: NSPersistentContainer = {
+        let modelName = "DogBreeds"
+        guard let url = Bundle.module.url(forResource: modelName, withExtension: "momd"),
               let managedObjectModel = NSManagedObjectModel(contentsOf: url) else {
                   fatalError("Could not load managed object store")
               }
         
-        persistentContainer = NSPersistentContainer(name: Self.modelName,
+        let container = NSPersistentContainer(name: modelName,
                                                     managedObjectModel: managedObjectModel)
         
-        persistentContainer.loadPersistentStores { [unowned self] _, error in
+        container.loadPersistentStores { _, error in
             if let error = error {
                 fatalError("Failed loading persistent container with Error: \(error.localizedDescription)")
             }
             
-            self.persistentContainer.viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+            container.viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         }
-    }
+        return container
+    }()
 }
