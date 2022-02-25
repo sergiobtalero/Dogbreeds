@@ -1,0 +1,14 @@
+name: DogBreeds
+targets:
+  DogBreeds:
+    type: application
+    platform: iOS
+    deploymentTarget: "15.2"
+    sources: 
+      - path: DogBreeds
+  DogBreedsTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "15.2"
+    sources:
+      - path: DogBreedsTests
