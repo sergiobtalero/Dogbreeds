@@ -9,6 +9,9 @@ import SwiftUI
 
 @main
 struct DogBreedsApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    // MARK: - Body
     var body: some Scene {
         WindowGroup {
             ContentView()

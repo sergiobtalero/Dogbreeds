@@ -13,6 +13,9 @@ targets:
     deploymentTarget: "15.2"
     sources: 
       - path: DogBreeds
+    dependencies:
+      - package: Injector
+      - package: Domain
   DogBreedsTests:
     type: bundle.unit-test
     platform: iOS

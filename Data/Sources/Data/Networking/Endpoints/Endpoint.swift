@@ -7,12 +7,12 @@
 
 import Foundation
 
-enum HTTPMethod: String {
+public enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
 }
 
-protocol Endpoint {
+public protocol Endpoint {
     var path: String { get }
     var httpMethod: HTTPMethod { get }
     var httpHeaders: [String: String] { get }

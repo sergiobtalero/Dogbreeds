@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol BreedsServiceContract {
+public protocol BreedsServiceContract {
     func request<T: Decodable>(endpoint: Endpoint) async throws ->  T
 }
 
@@ -18,19 +18,19 @@ public enum BreedsServiceError: Error {
     case invalidData
 }
 
-final class BreedsService {
+public final class BreedsService {
     private let urlSession: URLSession
     private let baseURL = "https://dog.ceo/api"
     
     // MARK: - Initializer
-    init(urlSession: URLSession = URLSession.shared) {
+    public init(urlSession: URLSession = URLSession.shared) {
         self.urlSession = urlSession
     }
 }
 
 // MARK: - BreedsServiceContract
 extension BreedsService: BreedsServiceContract {
-    func request<T>(endpoint: Endpoint) async throws -> T where T : Decodable {
+    public func request<T>(endpoint: Endpoint) async throws -> T where T : Decodable {
         guard let url = URL(string: "\(baseURL)\(endpoint.path)") else {
             throw BreedsServiceError.invalidURL
         }
