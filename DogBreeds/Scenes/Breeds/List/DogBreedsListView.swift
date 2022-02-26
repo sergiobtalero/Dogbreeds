@@ -44,8 +44,16 @@ struct DogBreedsListView: View {
         }
         .preferredColorScheme(.dark)
         .task {
-            _ = try? await viewModel.getDogBreeds()
+            await setupSubscriptions()
         }
+    }
+}
+
+// MARK: - Setup subscriptions
+private extension DogBreedsListView {
+    private func setupSubscriptions() async {
+        let input = DogBreedsListViewModel.Input(retryButtonTapPublisher: errorView.retryButtonTapPublisher)
+        await viewModel.bind(input)
     }
 }
 

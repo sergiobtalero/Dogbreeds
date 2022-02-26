@@ -7,14 +7,16 @@
 
 import Foundation
 import Injector
+import Combine
 import Domain
 
 @MainActor class DogBreedsListViewModel: ObservableObject {
     @Injected private var fetchDogBreedsUseCase: FetchDogBreedsFromLocalOrRemoteUseCaseContract
     
     private var dogBreeds: [DogBreed] = []
+    private var subscriptions = Set<AnyCancellable>()
     
-    @Published var viewState = ViewState.loading
+    @Published var viewState = ViewState.notStarted
 }
 
 // MARK: - View State
@@ -30,6 +32,8 @@ extension DogBreedsListViewModel {
 // MARK: - Public methods
 extension DogBreedsListViewModel {
     func getDogBreeds() async throws {
+        viewState = .loading
+        
         do {
             dogBreeds = try await fetchDogBreedsUseCase.execute()
             sortMainDogBreeds()
@@ -43,7 +47,25 @@ extension DogBreedsListViewModel {
 private extension DogBreedsListViewModel {
     private func sortMainDogBreeds() {
         let mainDogBreeds = dogBreeds.filter { $0.name == $0.breedFamily }.sorted(by: { $0.name < $1.name })
-//        viewState = .render(mainDogBreeds)
-        viewState = .error
+        viewState = .render(mainDogBreeds)
+    }
+}
+
+// MARK: - Output builder
+extension DogBreedsListViewModel {
+    struct Input {
+        let retryButtonTapPublisher: AnyPublisher<Void, Never>
+    }
+    
+    func bind(_ input: Input) async {
+        try? await getDogBreeds()
+        
+        input.retryButtonTapPublisher
+            .sink { _ in
+                Task {
+                    try? await self.getDogBreeds()
+                }
+            }
+            .store(in: &subscriptions)
     }
 }

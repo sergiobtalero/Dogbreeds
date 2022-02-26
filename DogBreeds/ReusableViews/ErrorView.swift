@@ -9,7 +9,11 @@ import Combine
 import SwiftUI
 
 struct ErrorView: View {
-    var onRetryTap: (() -> Void)?
+    private let retryButtonInternalTapPublisher = PassthroughSubject<Void, Never>()
+    
+    var retryButtonTapPublisher: AnyPublisher<Void, Never> {
+        retryButtonInternalTapPublisher.eraseToAnyPublisher()
+    }
     
     // MARK: - Body
     var body: some View {
@@ -21,7 +25,7 @@ struct ErrorView: View {
                 .foregroundColor(.gray)
             
             Button {
-                onRetryTap?()
+                retryButtonInternalTapPublisher.send(())
             } label: {
                 Text("Try again")
                     .foregroundColor(.yellow)
