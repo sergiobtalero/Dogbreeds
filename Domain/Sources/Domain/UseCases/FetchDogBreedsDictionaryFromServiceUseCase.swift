@@ -11,6 +11,10 @@ public protocol FetchDogBreedsDictionaryFromServiceUseCaseContract {
     func execute() async throws -> [String: [String]]
 }
 
+enum FetchDogBreedsDictionaryFromServiceUseCaseError: Error {
+    case networkError
+}
+
 public final class FetchDogBreedsDictionaryFromServiceUseCase {
     private let breedsNetworkProvider: DogBreedsNetworkProviderContract
     
@@ -23,6 +27,11 @@ public final class FetchDogBreedsDictionaryFromServiceUseCase {
 // MARK: - GetDogBreedUseCaseContract
 extension FetchDogBreedsDictionaryFromServiceUseCase: FetchDogBreedsDictionaryFromServiceUseCaseContract {
     public func execute() async throws -> [String: [String]] {
-        try await breedsNetworkProvider.fetchAllBreedsList()
+        do {
+            let dictionary = try await breedsNetworkProvider.fetchAllBreedsList()
+            return dictionary
+        } catch {
+            throw FetchDogBreedsDictionaryFromServiceUseCaseError.networkError
+        }
     }
 }

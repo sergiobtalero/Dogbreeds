@@ -28,11 +28,12 @@ extension DogBreedsNetworkProvider: DogBreedsNetworkProviderContract {
         }
     }
     
-    public func fetchImages(forBreed breed: String) async {
-        fatalError("Not implemented")
-    }
-    
-    public func fetchSubBreeds(of breed: String) async {
-        fatalError("Not implemented")
+    public func fetchImages(forBreed breed: String) async throws -> [String] {
+        do {
+            let images: DogServiceResponse<[String]> = try await breedsService.request(endpoint: BreedEndpoint.images(breed))
+            return images.message
+        } catch {
+            throw DogBreedsNetworkProviderError.general
+        }
     }
 }

@@ -39,6 +39,8 @@ extension DependencyContainer {
         Self.registerGetDogBreedsUseCase()
         Self.registerGetPersistedDogBreedsUseCase()
         Self.registerStoreDogBreedUseCase()
+        Self.registerGetPersistedDogBreedsCountUseCase()
+        Self.registerFetchDogBreedsFromLocalOrRemoteUseCase()
     }
 }
 
@@ -60,5 +62,23 @@ private extension DependencyContainer {
         let provider = DogBreedsPersistedProvider(coreDataManager: CoreDataManager.shared)
         let useCase = StoreDogBreedsUseCase(provider: provider)
         shared.register(useCase as StoreDogBreedsUseCaseContract)
+    }
+    
+    private static func registerGetPersistedDogBreedsCountUseCase() {
+        let provider = DogBreedsPersistedProvider(coreDataManager: CoreDataManager.shared)
+        let useCase = GetPersistedDogbreedsCountUseCase(dogBreedsPersistedProvider: provider)
+        shared.register(useCase as GetPersistedDogBreedsCountUseCaseContract)
+    }
+    
+    private static func registerFetchDogBreedsFromLocalOrRemoteUseCase() {
+        let getPersistedDogBreedsCountUseCase: GetPersistedDogBreedsCountUseCaseContract = shared.resolve()
+        let fetchDogBreedsDictionaryUseCase: FetchDogBreedsDictionaryFromServiceUseCaseContract = shared.resolve()
+        let getPersistedDogBreedsUseCase: GetPersistedDogBreedsUseCaseContract = shared.resolve()
+        let storeDogBreedsUseCase: StoreDogBreedsUseCaseContract = shared.resolve()
+        let useCase = FetchDogBreedsFromLocalOrRemoteUseCase(getPersistedDogBreedsCountUseCase: getPersistedDogBreedsCountUseCase,
+                                                             fetchDogBreedsFromServiceUseCase: fetchDogBreedsDictionaryUseCase,
+                                                             getPersistedDogBreedsUseCase: getPersistedDogBreedsUseCase,
+                                                             storeDogBreedsUseCase: storeDogBreedsUseCase)
+        shared.register(useCase as FetchDogBreedsFromLocalOrRemoteUseCaseContract)
     }
 }

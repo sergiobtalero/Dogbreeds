@@ -10,9 +10,7 @@ import SwiftUI
 import Domain
 
 struct ContentView: View {
-    @Injected private var fetchDogBreedsUseCase: FetchDogBreedsDictionaryFromServiceUseCaseContract
-    @Injected private var getPersistedDogBreedsUseCase: GetPersistedDogBreedsUseCaseContract
-    @Injected private var storeDogBreedsUseCase: StoreDogBreedsUseCaseContract
+    @Injected private var fetchDogBreedsUseCase: FetchDogBreedsFromLocalOrRemoteUseCaseContract
     
     @State private var dogBreeds: [DogBreed] = []
     
@@ -31,23 +29,11 @@ struct ContentView: View {
     }
     
     func loadInitialData() async throws {
-        let savedDogBreeds = getPersistedDogBreedsUseCase.execute()
-        
-        if !savedDogBreeds.isEmpty {
-            dogBreeds = savedDogBreeds
-            let families = Set<String>(dogBreeds.map { $0.breedFamily })
-            return
+        do {
+            dogBreeds = try await fetchDogBreedsUseCase.execute()
+        } catch {
+            print("Error: \(error.localizedDescription)")
         }
-        
-        let dogBreedsDictionary = try? await fetchDogBreedsUseCase.execute()
-        
-        guard let dogBreedsDictionary = dogBreedsDictionary else {
-            print("Oops")
-            return
-        }
-        
-        try? storeDogBreedsUseCase.execute(dictionary: dogBreedsDictionary)
-        dogBreeds = getPersistedDogBreedsUseCase.execute()
     }
 }
 

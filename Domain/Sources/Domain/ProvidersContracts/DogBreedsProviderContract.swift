@@ -13,6 +13,5 @@ public enum DogBreedsNetworkProviderError: Error {
 
 public protocol DogBreedsNetworkProviderContract {
     func fetchAllBreedsList() async throws -> [String: [String]]
-    func fetchImages(forBreed breed: String) async
-    func fetchSubBreeds(of breed: String) async
+    func fetchImages(forBreed breed: String) async throws -> [String]
 }

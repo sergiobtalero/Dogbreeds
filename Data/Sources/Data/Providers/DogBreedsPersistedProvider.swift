@@ -30,6 +30,16 @@ extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
         }
     }
     
+    public func fetchDogBreedsCount() -> Int {
+        let fetchRequest = DogBreedEntity.fetchRequest()
+        do {
+            let entitiesCount = try coreDataManager.viewContext.count(for: fetchRequest)
+            return entitiesCount
+        } catch {
+            return .zero
+        }
+    }
+    
     public func storeDogBreeds(from dictionary: [String: [String]]) throws {
         for breed in dictionary {
             if breed.value.isEmpty {

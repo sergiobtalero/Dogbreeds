@@ -13,5 +13,6 @@ public enum DogBreedsPersistedProviderError: Error {
 
 public protocol DogBreedsPersistedProviderContract {
     func fetchDogBreeds() -> [DogBreed]
+    func fetchDogBreedsCount() -> Int
     func storeDogBreeds(from dictionary: [String: [String]]) throws
 }
