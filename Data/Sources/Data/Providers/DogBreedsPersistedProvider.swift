@@ -63,4 +63,49 @@ extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
             throw error
         }
     }
+    
+    public func updateDogBreed(_ dogBreed: String,
+                               images: [String]) throws {
+        let fetchRequest = DogBreedEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(DogBreedEntity.name), dogBreed)
+        
+        guard let result = try? coreDataManager.viewContext.fetch(fetchRequest).first else {
+            throw DogBreedsPersistedProviderError.notFound
+        }
+        
+        let imagesEntities = images.map { image -> DogImageEntity in
+            let imageEntity = DogImageEntity(context: coreDataManager.viewContext)
+            imageEntity.urlString = image
+            imageEntity.breed = result
+            imageEntity.favorited = false
+            return imageEntity
+        }
+        
+        result.setValue(imagesEntities, forKey: "images")
+        
+        do {
+            try coreDataManager.viewContext.save()
+        } catch {
+            coreDataManager.viewContext.rollback()
+            throw error
+        }
+    }
+    
+    func toggleDogBreedImageFavoriteStatus(_ image: String) throws {
+        let fetchRequest = DogImageEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(DogImageEntity.urlString), image)
+        
+        guard let result = try? coreDataManager.viewContext.fetch(fetchRequest).first else {
+            throw DogBreedsPersistedProviderError.notFound
+        }
+        
+        result.setValue(!result.favorited, forKey: "favorited")
+        
+        do {
+            try coreDataManager.viewContext.save()
+        } catch {
+            coreDataManager.viewContext.rollback()
+            throw error
+        }
+    }
 }
