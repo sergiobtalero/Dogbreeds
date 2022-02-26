@@ -20,15 +20,17 @@ public class CoreDataManager {
         persistentContainer.newBackgroundContext()
     }()
     
+    internal static let momURL = Bundle.module.url(forResource: "DogBreeds", withExtension: "momd")
+    
     // MARK: - Initializer
-    init(persistentContainer: NSPersistentContainer = mainContainer) {
+    public init(persistentContainer: NSPersistentContainer = mainContainer) {
         self.persistentContainer = persistentContainer
     }
 }
 
 // MARK: - Private extension
 extension CoreDataManager {
-    static let mainContainer: NSPersistentContainer = {
+    public static let mainContainer: NSPersistentContainer = {
         let modelName = "DogBreeds"
         guard let url = Bundle.module.url(forResource: modelName, withExtension: "momd"),
               let managedObjectModel = NSManagedObjectModel(contentsOf: url) else {

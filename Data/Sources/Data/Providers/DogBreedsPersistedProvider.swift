@@ -30,6 +30,17 @@ extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
         }
     }
     
+    public func fetchDogBreed(name: String) throws -> DogBreed {
+        let fetchRequest = DogBreedEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(DogBreedEntity.name), name)
+        
+        if let entity = try? coreDataManager.viewContext.fetch(fetchRequest).first {
+            return DogBreedMapper.map(input: entity)
+        } else {
+            throw DogBreedsPersistedProviderError.notFound
+        }
+    }
+    
     public func fetchDogBreedsCount() -> Int {
         let fetchRequest = DogBreedEntity.fetchRequest()
         do {
@@ -40,7 +51,7 @@ extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
         }
     }
     
-    public func storeDogBreeds(from dictionary: [String: [String]]) throws {
+    public func storeDogBreeds(from dictionary: [String: [String]]) {
         for breed in dictionary {
             if breed.value.isEmpty {
                 let newEntity = DogBreedEntity(context: coreDataManager.viewContext)
@@ -56,12 +67,7 @@ extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
             }
         }
         
-        do {
-            try coreDataManager.viewContext.save()
-        } catch {
-            coreDataManager.viewContext.rollback()
-            throw error
-        }
+        try? coreDataManager.viewContext.save()
     }
     
     public func updateDogBreed(_ dogBreed: String,
@@ -81,17 +87,12 @@ extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
             return imageEntity
         }
         
-        result.setValue(imagesEntities, forKey: "images")
+        result.setValue(NSSet(array: imagesEntities), forKey: "images")
         
-        do {
-            try coreDataManager.viewContext.save()
-        } catch {
-            coreDataManager.viewContext.rollback()
-            throw error
-        }
+        try? coreDataManager.viewContext.save()
     }
     
-    func toggleDogBreedImageFavoriteStatus(_ image: String) throws {
+    public func toggleDogBreedImageFavoriteStatus(_ image: String) throws {
         let fetchRequest = DogImageEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(DogImageEntity.urlString), image)
         
@@ -101,11 +102,6 @@ extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
         
         result.setValue(!result.favorited, forKey: "favorited")
         
-        do {
-            try coreDataManager.viewContext.save()
-        } catch {
-            coreDataManager.viewContext.rollback()
-            throw error
-        }
+        try? coreDataManager.viewContext.save()
     }
 }
