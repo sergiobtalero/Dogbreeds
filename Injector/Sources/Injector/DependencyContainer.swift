@@ -37,6 +37,8 @@ extension DependencyContainer {
     
     public static func registerUseCases() {
         Self.registerGetDogBreedsUseCase()
+        Self.registerGetPersistedDogBreedsUseCase()
+        Self.registerStoreDogBreedUseCase()
     }
 }
 
@@ -44,7 +46,19 @@ extension DependencyContainer {
 private extension DependencyContainer {
     private static func registerGetDogBreedsUseCase() {
         let provider = DogBreedsNetworkProvider(breedsService: BreedsService())
-        let useCase = GetDogBreedsUseCase(breedsNetworkProvider: provider)
-        shared.register(useCase as GetDogBreedUseCaseContract)
+        let useCase = FetchDogBreedsDictionaryFromServiceUseCase(breedsNetworkProvider: provider)
+        shared.register(useCase as FetchDogBreedsDictionaryFromServiceUseCaseContract)
+    }
+    
+    private static func registerGetPersistedDogBreedsUseCase() {
+        let provider = DogBreedsPersistedProvider(coreDataManager: CoreDataManager.shared)
+        let useCase = GetPersistedDogBreedsUseCase(dogBreedsPersistedProvider: provider)
+        shared.register(useCase as GetPersistedDogBreedsUseCaseContract)
+    }
+    
+    private static func registerStoreDogBreedUseCase() {
+        let provider = DogBreedsPersistedProvider(coreDataManager: CoreDataManager.shared)
+        let useCase = StoreDogBreedsUseCase(provider: provider)
+        shared.register(useCase as StoreDogBreedsUseCaseContract)
     }
 }

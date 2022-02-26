@@ -7,10 +7,12 @@
 
 import Foundation
 
-public enum DogBreedsNetworkProviderError: Error {}
+public enum DogBreedsNetworkProviderError: Error {
+    case general
+}
 
 public protocol DogBreedsNetworkProviderContract {
-    func fetchAllBreedsList() async
+    func fetchAllBreedsList() async throws -> [String: [String]]
     func fetchImages(forBreed breed: String) async
     func fetchSubBreeds(of breed: String) async
 }

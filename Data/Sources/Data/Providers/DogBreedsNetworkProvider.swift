@@ -18,12 +18,13 @@ public final class DogBreedsNetworkProvider {
 }
 
 // MARK: - DogBreedsProviderContract
-extension DogBreedsNetworkProvider: DogBreedsNetworkProviderContract {
-    public func fetchAllBreedsList() async {
+extension DogBreedsNetworkProvider: DogBreedsNetworkProviderContract {    
+    public func fetchAllBreedsList() async throws -> [String: [String]] {
         do {
             let breedsDictionary: DogServiceResponse<[String: [String]]> = try await breedsService.request(endpoint: BreedsEndpoint.list)
+            return breedsDictionary.message
         } catch {
-            fatalError("Error: \(error.localizedDescription)")
+            throw DogBreedsNetworkProviderError.general
         }
     }
     
