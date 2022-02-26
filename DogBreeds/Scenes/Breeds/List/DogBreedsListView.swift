@@ -8,22 +8,28 @@
 import SwiftUI
 
 struct DogBreedsListView: View {
-        @StateObject var viewModel = DogBreedsListViewModel()
+    private let loadingView = LoadingView()
+    private let errorView = ErrorView()
     
+    @StateObject var viewModel = DogBreedsListViewModel()
+    
+    // MARK: - Body
     var body: some View {
         NavigationView {
             Group {
                 switch viewModel.viewState {
+                case .notStarted:
+                    EmptyView()
                 case .loading:
-                    Text("Loading.\nPlease wait")
+                    loadingView
                 case let .render(breeds):
                     List {
                         ForEach(breeds, id: \.name) { breed in
-                            Text(breed.name.uppercased())
+                            Text(breed.name.capitalized)
                         }
                     }
                 case .error:
-                    Text("Something went wrong")
+                    errorView
                 }
             }
             .navigationTitle("Dog Breeds")
@@ -32,9 +38,11 @@ struct DogBreedsListView: View {
                     Button("Favorites") {
                         print("User tapped favorites")
                     }
+                    .foregroundColor(.yellow)
                 }
             }
         }
+        .preferredColorScheme(.dark)
         .task {
             _ = try? await viewModel.getDogBreeds()
         }

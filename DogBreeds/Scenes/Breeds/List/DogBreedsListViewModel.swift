@@ -20,6 +20,7 @@ import Domain
 // MARK: - View State
 extension DogBreedsListViewModel {
     enum ViewState {
+        case notStarted
         case loading
         case render([DogBreed])
         case error
@@ -42,6 +43,7 @@ extension DogBreedsListViewModel {
 private extension DogBreedsListViewModel {
     private func sortMainDogBreeds() {
         let mainDogBreeds = dogBreeds.filter { $0.name == $0.breedFamily }.sorted(by: { $0.name < $1.name })
-        viewState = .render(mainDogBreeds)
+//        viewState = .render(mainDogBreeds)
+        viewState = .error
     }
 }

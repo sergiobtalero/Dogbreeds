@@ -16,6 +16,10 @@ targets:
     dependencies:
       - package: Injector
       - package: Domain
+    scheme: 
+      gatherCoverageData: true
+      testTargets: 
+        - name: DogBreedsTests
   DogBreedsTests:
     type: bundle.unit-test
     platform: iOS
