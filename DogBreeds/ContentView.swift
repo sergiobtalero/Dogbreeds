@@ -22,7 +22,15 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Dog Breeds")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Favorites") {
+                        print("User tapped favorites")
+                    }
+                }
+            }
         }
+        
         .task {
             _ = try? await loadInitialData()
         }
