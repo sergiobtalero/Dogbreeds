@@ -30,8 +30,8 @@ let package = Package(
                 "Data",
                 "Domain"
             ]),
-        .testTarget(
-            name: "InjectorTests",
-            dependencies: ["Injector"]),
+//        .testTarget(
+//            name: "InjectorTests",
+//            dependencies: ["Injector"]),
     ]
 )
