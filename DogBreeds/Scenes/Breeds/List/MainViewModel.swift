@@ -10,17 +10,25 @@ import Injector
 import Combine
 import Domain
 
-@MainActor class DogBreedsListViewModel: ObservableObject {
+@MainActor class MainViewModel: ObservableObject {
     @Injected private var fetchDogBreedsUseCase: FetchDogBreedsFromLocalOrRemoteUseCaseContract
     
     private var dogBreeds: [DogBreed] = []
     private var subscriptions = Set<AnyCancellable>()
     
+    private let router: MainRouterContract
+    
     @Published var viewState = ViewState.notStarted
+    @Published var destinationRoute: MainRouter.Route?
+    
+    // MARK: - Initializer
+    init(router: MainRouterContract = MainRouter()) {
+        self.router = router
+    }
 }
 
 // MARK: - View State
-extension DogBreedsListViewModel {
+extension MainViewModel {
     enum ViewState {
         case notStarted
         case loading
@@ -29,9 +37,9 @@ extension DogBreedsListViewModel {
     }
 }
 
-// MARK: - Public methods
-extension DogBreedsListViewModel {
-    func getDogBreeds() async throws {
+// MARK: - Private methods
+private extension MainViewModel {
+    private func getDogBreeds() async throws {
         viewState = .loading
         
         do {
@@ -41,18 +49,19 @@ extension DogBreedsListViewModel {
             viewState = .error
         }
     }
-}
-
-// MARK: - Private methods
-private extension DogBreedsListViewModel {
+    
     private func sortMainDogBreeds() {
-        let mainDogBreeds = dogBreeds.filter { $0.name == $0.breedFamily }.sorted(by: { $0.name < $1.name })
+//        let mainDogBreeds = dogBreeds.filter { $0.name == $0.breedFamily }.sorted(by: { $0.name < $1.name })
+        var mainDogBreeds: [DogBreed] = []
+        for breed in dogBreeds.sorted(by: { $0.name < $1.name }) {
+            print(breed)
+        }
         viewState = .render(mainDogBreeds)
     }
 }
 
-// MARK: - Output builder
-extension DogBreedsListViewModel {
+// MARK: - MainViewModelContract
+extension MainViewModel {
     struct Input {
         let retryButtonTapPublisher: AnyPublisher<Void, Never>
     }
@@ -67,5 +76,9 @@ extension DogBreedsListViewModel {
                 }
             }
             .store(in: &subscriptions)
+    }
+    
+    func didSelectDogBreed(_ breed: DogBreed) {
+        destinationRoute = router.getRouteForBreed(breed)
     }
 }

@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct DogBreed {
+public struct DogBreed: Identifiable, Equatable {
+    public let id: UUID
     public let name: String
     public let breedFamily: String
     public let images: [BreedImage]
@@ -16,6 +17,8 @@ public struct DogBreed {
     public init(name: String,
                 breedFamily: String,
                 images: [BreedImage]) {
+        id = UUID()
+        
         self.name = name
         self.breedFamily = breedFamily
         self.images = images

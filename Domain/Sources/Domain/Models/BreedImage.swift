@@ -7,13 +7,16 @@
 
 import Foundation
 
-public struct BreedImage {
+public struct BreedImage: Identifiable, Equatable {
+    public let id: UUID
     public let url: URL
     public var isFavorite: Bool
     
     // MARK: - Initializer
     public init(url: URL,
                 isFavorite: Bool) {
+        id = UUID()
+        
         self.url = url
         self.isFavorite = isFavorite
     }

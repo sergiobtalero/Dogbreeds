@@ -14,7 +14,7 @@ struct DogBreedsApp: App {
     // MARK: - Body
     var body: some Scene {
         WindowGroup {
-            DogBreedsListView()
+            MainView()
         }
     }
 }
