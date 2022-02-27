@@ -15,14 +15,17 @@ import Domain
     @Injected private var toggleLikeStatusOfDogImageUseCase: ToggleLikeStatusOfDogImageUseCaseContract
     
     private let breedName: String
+    private let familyName: String?
     private var subscriptions = Set<AnyCancellable>()
     
     @Published var viewState = ViewState.loading
     @Published var displayingBreedName = ""
     
     // MARK: - Initializer
-    init(breedName: String) {
+    init(breedName: String,
+         familyName: String?) {
         self.breedName = breedName
+        self.familyName = familyName
         displayingBreedName = breedName
     }
 }
@@ -52,7 +55,8 @@ private extension BreedImagesViewModel {
     private func getDogBreedImages() async {
         viewState = .loading
         do {
-            let breedImages = try await fetchDogImagesFromRemoteOrLocaUseCase.execute(dogBreedName: breedName)
+            let breedImages = try await fetchDogImagesFromRemoteOrLocaUseCase.execute(dogBreedName: breedName,
+                                                                                      familyName: familyName)
             let sortedBreedImages = breedImages.sorted(by: { $0.url.absoluteString < $1.url.absoluteString })
             viewState = .render(sortedBreedImages)
         } catch {

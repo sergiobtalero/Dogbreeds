@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 import Domain
 
 struct MainView: View {
@@ -15,6 +16,8 @@ struct MainView: View {
     
     private let loadingView = LoadingView()
     private let errorView = ErrorView()
+    
+    private let didSelectDogPublisher = PassthroughSubject<DogFamily, Never>()
     
     // MARK: - Body
     var body: some View {
@@ -36,9 +39,6 @@ struct MainView: View {
                 
                 NavigationLink(isActive: $isRouteSet) {
                     getDestinationView()
-                        .onDisappear {
-                            selectedDogFamily = nil
-                        }
                 } label: {
                     EmptyView()
                 }
@@ -58,7 +58,11 @@ struct MainView: View {
         .task {
             await setupSubscriptions()
         }
-        .onChange(of: selectedDogFamily, perform: toggleSelectedDogFamilyState)
+        .onChange(of: selectedDogFamily) { _ in
+            if let selectedDogFamily = selectedDogFamily {
+                didSelectDogPublisher.send(selectedDogFamily)
+            }
+        }
         .onChange(of: viewModel.destinationRoute) { newValue in
             isRouteSet = newValue != nil
         }
@@ -68,16 +72,9 @@ struct MainView: View {
 // MARK: - Setup subscriptions
 private extension MainView {
     private func setupSubscriptions() async {
-        let input = MainViewModel.Input(retryButtonTapPublisher: errorView.retryButtonTapPublisher)
+        let input = MainViewModel.Input(retryButtonTapPublisher: errorView.retryButtonTapPublisher,
+                                        didSelectDogFamilyPublisher: didSelectDogPublisher.eraseToAnyPublisher())
         await viewModel.bind(input)
-    }
-    
-    private func toggleSelectedDogFamilyState(_ family: DogFamily?) {
-        if let family = family {
-            Task {
-                viewModel.didSelectDogFamily(family)
-            }
-        }
     }
     
     @ViewBuilder
@@ -86,7 +83,11 @@ private extension MainView {
             switch destinationRoute {
             case .images:
                 if let selectedDogFamily = selectedDogFamily {
-                    BreedImagesView(breedName: selectedDogFamily.name)
+                    BreedImagesView(breedName: selectedDogFamily.name,
+                                    familyName: nil)
+                        .onDisappear {
+                            self.selectedDogFamily = nil
+                        }
                 } else {
                     EmptyView()
                 }

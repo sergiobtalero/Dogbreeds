@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol FetchDogImagesFromRemoteOrLocalUseCaseContract {
-    func execute(dogBreedName: String) async throws -> [BreedImage]
+    func execute(dogBreedName: String, familyName: String?) async throws -> [BreedImage]
 }
 
 public enum FetchDogImagesFromRemoteOrLocalUseCaseError: Error {
@@ -35,18 +35,28 @@ public final class FetchDogImagesFromRemoteOrLocalUseCase {
 
 // MARK: - FetchDogImagesFromRemoteOrLocalUseCaseContract
 extension FetchDogImagesFromRemoteOrLocalUseCase: FetchDogImagesFromRemoteOrLocalUseCaseContract {
-    public func execute(dogBreedName: String) async throws -> [BreedImage] {
+    public func execute(dogBreedName: String, familyName: String?) async throws -> [BreedImage] {
         let dogBreedImagesCount = getPersistedDogBreedImagesCountUseCase.execute(dogBreedName: dogBreedName)
         if dogBreedImagesCount > .zero {
             return getPersistedDogBreedImagesUseCase.execute(dogBreedName: dogBreedName)
         }
         
         do {
-            let imagesArray = try await getDogImagesFromServiceUseCase.execute(breedName: dogBreedName)
-            try updateDogBreedWithImagesUseCase.execute(dogBreedName: dogBreedName, images: imagesArray)
+            let imagesArray = try await getDogImagesFromServiceUseCase.execute(breedName: getSearchText(dogBreedName: dogBreedName,
+                                                                                                        familyName: familyName))
+            updateDogBreedWithImagesUseCase.execute(dogBreedName: dogBreedName, images: imagesArray)
             return getPersistedDogBreedImagesUseCase.execute(dogBreedName: dogBreedName)
         } catch {
             throw FetchDogImagesFromRemoteOrLocalUseCaseError.general
+        }
+    }
+    
+    private func getSearchText(dogBreedName: String,
+                               familyName: String?) -> String {
+        if let familyName = familyName {
+            return "\(familyName)/\(dogBreedName)"
+        } else {
+            return dogBreedName
         }
     }
 }

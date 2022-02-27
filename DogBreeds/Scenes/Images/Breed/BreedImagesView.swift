@@ -19,8 +19,9 @@ struct BreedImagesView: View {
     private var likeTapPublisher = PassthroughSubject<BreedImage, Never>()
     
     // MARK: - Initializer
-    init(breedName: String) {
-        _viewModel = StateObject(wrappedValue: BreedImagesViewModel(breedName: breedName))
+    init(breedName: String, familyName: String?) {
+        _viewModel = StateObject(wrappedValue: BreedImagesViewModel(breedName: breedName,
+                                                                    familyName: familyName))
     }
     
     // MARK: - Body
@@ -37,11 +38,7 @@ struct BreedImagesView: View {
         }
         .navigationTitle("\(viewModel.displayingBreedName.capitalized) Photos")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            Task {
-                await setupSubscriptions()
-            }
-        }
+        .task { await setupSubscriptions() }
         .onChange(of: viewModel.viewState) { newValue in
             if case let .render(breedImages) = newValue {
                 images = breedImages
@@ -67,6 +64,6 @@ private extension BreedImagesView {
 
 struct BreedImagesView_Previews: PreviewProvider {
     static var previews: some View {
-        BreedImagesView(breedName: "Husky")
+        BreedImagesView(breedName: "Husky", familyName: nil)
     }
 }

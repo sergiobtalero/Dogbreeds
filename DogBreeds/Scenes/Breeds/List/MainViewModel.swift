@@ -54,18 +54,9 @@ private extension MainViewModel {
         let sortedDogFamilies = dogFamilies.sorted(by: { $0.name < $1.name })
         viewState = .render(sortedDogFamilies)
     }
-}
-
-// MARK: - Public mehtods
-extension MainViewModel {
-    struct Input {
-        let retryButtonTapPublisher: AnyPublisher<Void, Never>
-    }
     
-    func bind(_ input: Input) async {
-        try? await getDogBreeds()
-        
-        input.retryButtonTapPublisher
+    private func observeRetryButtonTapPublisher(_ publisher: AnyPublisher<Void, Never>) {
+        publisher
             .sink { _ in
                 Task {
                     try? await self.getDogBreeds()
@@ -74,8 +65,29 @@ extension MainViewModel {
             .store(in: &subscriptions)
     }
     
-    func didSelectDogFamily(_ family: DogFamily) {
-        let newRoute = router.getRouteForDogFamily(family, currentRoute: destinationRoute)
-        destinationRoute = newRoute
+    private func observeDidSelectDogFamilyPublisher(_ publisher: AnyPublisher<DogFamily, Never>) {
+        publisher
+            .sink { [weak self] selectedDogFamily in
+                guard let self = self else { return }
+                let newRoute = self.router.getRouteForDogFamily(selectedDogFamily,
+                                                                 currentRoute: self.destinationRoute)
+                self.destinationRoute = newRoute
+            }
+            .store(in: &subscriptions)
+    }
+}
+
+// MARK: - Public mehtods
+extension MainViewModel {
+    struct Input {
+        let retryButtonTapPublisher: AnyPublisher<Void, Never>
+        let didSelectDogFamilyPublisher: AnyPublisher<DogFamily, Never>
+    }
+    
+    func bind(_ input: Input) async {
+        try? await getDogBreeds()
+        
+        observeRetryButtonTapPublisher(input.retryButtonTapPublisher)
+        observeDidSelectDogFamilyPublisher(input.didSelectDogFamilyPublisher)
     }
 }
