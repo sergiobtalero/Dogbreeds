@@ -27,10 +27,3 @@ struct SubBreedsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
-struct SubBreedsView_Previews: PreviewProvider {
-    static var previews: some View {
-//        SubBreedsView()
-        Text("")
-    }
-}
