@@ -6,33 +6,62 @@
 //
 
 import SwiftUI
+import Combine
 import Domain
 
 struct ImagesListView: View {
-    let images: [BreedImage]
+    private let likeTapInternalPublisher = PassthroughSubject<BreedImage, Never>()
     
-    let columns: [GridItem] = [
+    private let columns: [GridItem] = [
+        GridItem(.flexible()),
         GridItem(.flexible())
     ]
     
+    let images: [BreedImage]
+    
+    var likeTapPublisher: AnyPublisher<BreedImage, Never> {
+        likeTapInternalPublisher.eraseToAnyPublisher()
+    }
+    
+    // MARK: - Body
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 10) {
                     ForEach(images) { element in
-                        AsyncImage(url: element.url) { image in
-                            image
-                                .resizable()
-                                .frame(width: geometry.size.width - 10, height: geometry.size.width - 10)
-                        } placeholder: {
-                            Text("Loading")
-                                .frame(width: geometry.size.width - 10, height: geometry.size.width - 10)
+                        ZStack(alignment: .topTrailing) {
+                            AsyncImage(url: element.url) { image in
+                                image
+                                    .resizable()
+                                    .frame(width: getImageWidth(geometry: geometry),
+                                           height: getImageWidth(geometry: geometry))
+                            } placeholder: {
+                                Text("Loading")
+                                    .frame(width: getImageWidth(geometry: geometry),
+                                           height: getImageWidth(geometry: geometry))
+                            }
+                            
+                            Button {
+                                likeTapInternalPublisher.send(element)
+                            } label: {
+                                Image(systemName: element.isFavorite ? "heart.fill" : "heart")
+                                    .foregroundColor(.yellow)
+                                    .font(.system(size: 20))
+                            }
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 5)
                         }
-                        
                     }
                 }
             }
         }
+    }
+}
+
+// MARK: - Private methods
+private extension ImagesListView {
+    private func getImageWidth(geometry: GeometryProxy) -> CGFloat {
+        geometry.size.width / 2 - 10
     }
 }
 
