@@ -23,7 +23,6 @@ final class DogBreedMapper: Mapper {
         }
 
         return DogBreed(name: input.name ?? "",
-                        breedFamily: input.breedFamiliy ?? input.name ?? "",
                         images: images)
     }
 }

@@ -7,15 +7,15 @@
 
 import Foundation
 
-public protocol FetchDogBreedsDictionaryFromServiceUseCaseContract {
+public protocol FetchDogFamiliesDictionaryFromServiceUseCaseContract {
     func execute() async throws -> [String: [String]]
 }
 
-enum FetchDogBreedsDictionaryFromServiceUseCaseError: Error {
+enum FetchDogFamiliesDictionaryFromServiceUseCaseError: Error {
     case networkError
 }
 
-public final class FetchDogBreedsDictionaryFromServiceUseCase {
+public final class FetchDogFamiliesDictionaryFromServiceUseCase {
     private let breedsNetworkProvider: DogBreedsNetworkProviderContract
     
     // MARK: - Initializer
@@ -25,13 +25,13 @@ public final class FetchDogBreedsDictionaryFromServiceUseCase {
 }
 
 // MARK: - GetDogBreedUseCaseContract
-extension FetchDogBreedsDictionaryFromServiceUseCase: FetchDogBreedsDictionaryFromServiceUseCaseContract {
+extension FetchDogFamiliesDictionaryFromServiceUseCase: FetchDogFamiliesDictionaryFromServiceUseCaseContract {
     public func execute() async throws -> [String: [String]] {
         do {
             let dictionary = try await breedsNetworkProvider.fetchAllBreedsList()
             return dictionary
         } catch {
-            throw FetchDogBreedsDictionaryFromServiceUseCaseError.networkError
+            throw FetchDogFamiliesDictionaryFromServiceUseCaseError.networkError
         }
     }
 }

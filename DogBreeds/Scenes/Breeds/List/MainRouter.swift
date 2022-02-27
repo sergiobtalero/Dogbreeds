@@ -10,20 +10,32 @@ import SwiftUI
 import Domain
 
 protocol MainRouterContract {
-    func getRouteForBreed(_ breed: DogBreed) -> MainRouter.Route
+    func getRouteForDogFamily(_ family: DogFamily) -> MainRouter.Route
 }
 
 final class MainRouter: MainRouterContract {
-    func getRouteForBreed(_ breed: DogBreed) -> Route {
-        return breed.name == breed.breedFamily ? .subBreeds : .images
+    func getRouteForDogFamily(_ family: DogFamily) -> Route {
+        family.breeds.isEmpty ? .images(family) : .subBreeds(family)
     }
 }
 
 // MARK: - Routes
 extension MainRouter {
-    enum Route {
-        case images
-        case subBreeds
+    enum Route: Equatable {
+        case images(DogFamily)
+        case subBreeds(DogFamily)
         case favorites
+        
+        static func ==(lhs: Route, rhs: Route) -> Bool {
+            switch (lhs, rhs) {
+            case (.favorites, .favorites):
+                return true
+            case (let .images(dogFamilyA), let .images(dogFamilyB)):
+                return dogFamilyA == dogFamilyB
+            case (let .subBreeds(dogFamilyA), let .subBreeds(dogFamilyB)):
+                return dogFamilyA == dogFamilyB
+            default: return false
+            }
+        }
     }
 }

@@ -48,37 +48,37 @@ extension DependencyContainer {
 private extension DependencyContainer {
     private static func registerGetDogBreedsUseCase() {
         let provider = DogBreedsNetworkProvider(breedsService: BreedsService())
-        let useCase = FetchDogBreedsDictionaryFromServiceUseCase(breedsNetworkProvider: provider)
-        shared.register(useCase as FetchDogBreedsDictionaryFromServiceUseCaseContract)
+        let useCase = FetchDogFamiliesDictionaryFromServiceUseCase(breedsNetworkProvider: provider)
+        shared.register(useCase as FetchDogFamiliesDictionaryFromServiceUseCaseContract)
     }
     
     private static func registerGetPersistedDogBreedsUseCase() {
         let provider = DogBreedsPersistedProvider(coreDataManager: CoreDataManager.shared)
-        let useCase = GetPersistedDogBreedsUseCase(dogBreedsPersistedProvider: provider)
-        shared.register(useCase as GetPersistedDogBreedsUseCaseContract)
+        let useCase = GetPersistedDogFamiliesUseCase(dogBreedsPersistedProvider: provider)
+        shared.register(useCase as GetPersistedDogFamiliesUseCaseContract)
     }
     
     private static func registerStoreDogBreedUseCase() {
         let provider = DogBreedsPersistedProvider(coreDataManager: CoreDataManager.shared)
-        let useCase = StoreDogBreedsUseCase(provider: provider)
-        shared.register(useCase as StoreDogBreedsUseCaseContract)
+        let useCase = StoreDogFamiliesUseCase(provider: provider)
+        shared.register(useCase as StoreDogFamiliesUseCaseContract)
     }
     
     private static func registerGetPersistedDogBreedsCountUseCase() {
         let provider = DogBreedsPersistedProvider(coreDataManager: CoreDataManager.shared)
-        let useCase = GetPersistedDogbreedsCountUseCase(dogBreedsPersistedProvider: provider)
-        shared.register(useCase as GetPersistedDogBreedsCountUseCaseContract)
+        let useCase = GetPersistedDogFamiliesCountUseCase(dogBreedsPersistedProvider: provider)
+        shared.register(useCase as GetPersistedDogFamiliesCountUseCaseContract)
     }
     
     private static func registerFetchDogBreedsFromLocalOrRemoteUseCase() {
-        let getPersistedDogBreedsCountUseCase: GetPersistedDogBreedsCountUseCaseContract = shared.resolve()
-        let fetchDogBreedsDictionaryUseCase: FetchDogBreedsDictionaryFromServiceUseCaseContract = shared.resolve()
-        let getPersistedDogBreedsUseCase: GetPersistedDogBreedsUseCaseContract = shared.resolve()
-        let storeDogBreedsUseCase: StoreDogBreedsUseCaseContract = shared.resolve()
-        let useCase = FetchDogBreedsFromLocalOrRemoteUseCase(getPersistedDogBreedsCountUseCase: getPersistedDogBreedsCountUseCase,
-                                                             fetchDogBreedsFromServiceUseCase: fetchDogBreedsDictionaryUseCase,
-                                                             getPersistedDogBreedsUseCase: getPersistedDogBreedsUseCase,
-                                                             storeDogBreedsUseCase: storeDogBreedsUseCase)
-        shared.register(useCase as FetchDogBreedsFromLocalOrRemoteUseCaseContract)
+        let getPersistedDogFamiliesCountUseCase: GetPersistedDogFamiliesCountUseCaseContract = shared.resolve()
+        let fetchDogFamiliesFromServiceUseCase: FetchDogFamiliesDictionaryFromServiceUseCaseContract = shared.resolve()
+        let getPersistedDogBreedsUseCase: GetPersistedDogFamiliesUseCaseContract = shared.resolve()
+        let storeDogBreedsUseCase: StoreDogFamiliesUseCaseContract = shared.resolve()
+        let useCase = FetchDogFamiliesFromLocalOrRemoteUseCase(getPersistedDogFamiliesCountUseCase: getPersistedDogFamiliesCountUseCase,
+                                                               fetchDogFamiliesFromServiceUseCase: fetchDogFamiliesFromServiceUseCase,
+                                                               getPersistedDogFamiliesUseCase: getPersistedDogBreedsUseCase,
+                                                               storeDogFamiliesUseCase: storeDogBreedsUseCase)
+        shared.register(useCase as FetchDogFamiliesFromLocalOrRemoteUseCaseContract)
     }
 }

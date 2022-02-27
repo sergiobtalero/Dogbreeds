@@ -20,22 +20,22 @@ public final class DogBreedsPersistedProvider {
 
 // MARK: - DogBreedsPersistedProviderContract
 extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
-    public func fetchDogBreeds() -> [DogBreed] {
-        let fetchRequest = DogBreedEntity.fetchRequest()
+    public func fetchDogFamilies() -> [DogFamily] {
+        let fetchRequest = DogFamiliyEntity.fetchRequest()
         do {
             let entities = try coreDataManager.viewContext.fetch(fetchRequest)
-            return entities.map { DogBreedMapper.map(input: $0) }
+            return entities.map { DogFamilyMapper.map(input: $0) }
         } catch {
             return []
         }
     }
     
-    public func fetchDogBreed(name: String) throws -> DogBreed {
-        let fetchRequest = DogBreedEntity.fetchRequest()
+    public func fetchDogfamiliy(name: String) throws -> DogFamily {
+        let fetchRequest = DogFamiliyEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(DogBreedEntity.name), name)
         
         if let entity = try? coreDataManager.viewContext.fetch(fetchRequest).first {
-            return DogBreedMapper.map(input: entity)
+            return DogFamilyMapper.map(input: entity)
         } else {
             throw DogBreedsPersistedProviderError.notFound
         }
@@ -52,19 +52,17 @@ extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
     }
     
     public func storeDogBreeds(from dictionary: [String: [String]]) {
-        for breed in dictionary {
-            if breed.value.isEmpty {
-                let newEntity = DogBreedEntity(context: coreDataManager.viewContext)
-                newEntity.name = breed.key
-                newEntity.breedFamiliy = nil
-                continue
+        dictionary.forEach { element in
+            let dogBreedsArray = element.value.map { dogBreedName -> DogBreedEntity in
+                let newDogBreedEntity = DogBreedEntity(context: coreDataManager.viewContext)
+                newDogBreedEntity.name = dogBreedName
+                newDogBreedEntity.images = NSSet(array: [])
+                return newDogBreedEntity
             }
             
-            breed.value.forEach { subBreed in
-                let newEntity = DogBreedEntity(context: coreDataManager.viewContext)
-                newEntity.name = subBreed
-                newEntity.breedFamiliy = breed.key
-            }
+            let newDogFamily = DogFamiliyEntity(context: coreDataManager.viewContext)
+            newDogFamily.name = element.key
+            newDogFamily.breeds = NSSet(array: dogBreedsArray)
         }
         
         try? coreDataManager.viewContext.save()

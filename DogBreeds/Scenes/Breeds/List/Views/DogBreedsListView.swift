@@ -9,9 +9,9 @@ import SwiftUI
 import Domain
 
 struct DogBreedsListView: View {
-    @Binding var selectedBreed: DogBreed?
+    @Binding var selectedBreed: DogFamily?
     
-    var breeds: [DogBreed]
+    var breeds: [DogFamily]
     
     // MARK: - Body
     var body: some View {
@@ -31,9 +31,8 @@ struct DogBreedsListView: View {
 }
 
 struct DogBreedsListView_Previews: PreviewProvider {
-    static var breeds: [DogBreed] = [
-        DogBreed(name: "Mountain Bernaise", breedFamily: "Mountain Bernaise", images: []),
-        DogBreed(name: "German Sheppard", breedFamily: "German Sheppard", images: [])
+    static var breeds: [DogFamily] = [
+        DogFamily(name: "Mountain Beranaise", breeds: [])
     ]
     static var previews: some View {
         DogBreedsListView(selectedBreed: .constant(Self.breeds.first!),

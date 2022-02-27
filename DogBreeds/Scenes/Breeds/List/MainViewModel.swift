@@ -11,9 +11,9 @@ import Combine
 import Domain
 
 @MainActor class MainViewModel: ObservableObject {
-    @Injected private var fetchDogBreedsUseCase: FetchDogBreedsFromLocalOrRemoteUseCaseContract
+    @Injected private var fetchDogBreedsUseCase: FetchDogFamiliesFromLocalOrRemoteUseCaseContract
     
-    private var dogBreeds: [DogBreed] = []
+    private var dogFamilies: [DogFamily] = []
     private var subscriptions = Set<AnyCancellable>()
     
     private let router: MainRouterContract
@@ -32,7 +32,7 @@ extension MainViewModel {
     enum ViewState {
         case notStarted
         case loading
-        case render([DogBreed])
+        case render([DogFamily])
         case error
     }
 }
@@ -43,7 +43,7 @@ private extension MainViewModel {
         viewState = .loading
         
         do {
-            dogBreeds = try await fetchDogBreedsUseCase.execute()
+            dogFamilies = try await fetchDogBreedsUseCase.execute()
             sortMainDogBreeds()
         } catch {
             viewState = .error
@@ -51,12 +51,8 @@ private extension MainViewModel {
     }
     
     private func sortMainDogBreeds() {
-//        let mainDogBreeds = dogBreeds.filter { $0.name == $0.breedFamily }.sorted(by: { $0.name < $1.name })
-        var mainDogBreeds: [DogBreed] = []
-        for breed in dogBreeds.sorted(by: { $0.name < $1.name }) {
-            print(breed)
-        }
-        viewState = .render(mainDogBreeds)
+        let sortedDogFamilies = dogFamilies.sorted(by: { $0.name < $1.name })
+        viewState = .render(sortedDogFamilies)
     }
 }
 
@@ -78,7 +74,7 @@ extension MainViewModel {
             .store(in: &subscriptions)
     }
     
-    func didSelectDogBreed(_ breed: DogBreed) {
-        destinationRoute = router.getRouteForBreed(breed)
+    func didSelectDogFamily(_ family: DogFamily) {
+        destinationRoute = router.getRouteForDogFamily(family)
     }
 }

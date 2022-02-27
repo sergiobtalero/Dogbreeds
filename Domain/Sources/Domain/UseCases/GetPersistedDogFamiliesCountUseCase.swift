@@ -7,11 +7,11 @@
 
 import Foundation
 
-public protocol GetPersistedDogBreedsCountUseCaseContract {
+public protocol GetPersistedDogFamiliesCountUseCaseContract {
     func execute() -> Int
 }
 
-public final class GetPersistedDogbreedsCountUseCase {
+public final class GetPersistedDogFamiliesCountUseCase {
     private let dogBreedsPersistedProvider: DogBreedsPersistedProviderContract
     
     // MARK: - Initializer
@@ -21,7 +21,7 @@ public final class GetPersistedDogbreedsCountUseCase {
 }
 
 // MARK: - GetPersistedDogBreedsCountUseCaseContract
-extension GetPersistedDogbreedsCountUseCase: GetPersistedDogBreedsCountUseCaseContract {
+extension GetPersistedDogFamiliesCountUseCase: GetPersistedDogFamiliesCountUseCaseContract {
     public func execute() -> Int {
         dogBreedsPersistedProvider.fetchDogBreedsCount()
     }

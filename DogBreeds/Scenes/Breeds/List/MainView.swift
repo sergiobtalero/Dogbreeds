@@ -10,7 +10,7 @@ import Domain
 
 struct MainView: View {
     @StateObject var viewModel = MainViewModel()
-    @State private var selectedDogBreed: DogBreed?
+    @State private var selectedDogFamily: DogFamily?
     @State private var isRouteSet = false
     
     private let loadingView = LoadingView()
@@ -26,26 +26,15 @@ struct MainView: View {
                         EmptyView()
                     case .loading:
                         loadingView
-                    case let .render(breeds):
-                        DogBreedsListView(selectedBreed: $selectedDogBreed, breeds: breeds)
+                    case let .render(dogFamilies):
+                        DogBreedsListView(selectedBreed: $selectedDogFamily, breeds: dogFamilies)
                     case .error:
                         errorView
                     }
                 }
                 
                 NavigationLink(isActive: $isRouteSet) {
-                    if let destinationRoute = viewModel.destinationRoute {
-                        switch destinationRoute {
-                        case .images:
-                            Text("Images")
-                        case .subBreeds:
-                            Text("SubBreeds")
-                        default:
-                            EmptyView()
-                        }
-                    } else {
-                        EmptyView()
-                    }
+                    getDestinationView()
                 } label: {
                     EmptyView()
                 }
@@ -65,7 +54,7 @@ struct MainView: View {
         .task {
             await setupSubscriptions()
         }
-        .onChange(of: selectedDogBreed, perform: toggleSelectedDogState)
+        .onChange(of: selectedDogFamily, perform: toggleSelectedDogFamilyState)
         .onChange(of: viewModel.destinationRoute) { newValue in
             isRouteSet = newValue != nil
         }
@@ -79,11 +68,27 @@ private extension MainView {
         await viewModel.bind(input)
     }
     
-    private func toggleSelectedDogState(_ breed: DogBreed?) {
-        if let breed = breed {
+    private func toggleSelectedDogFamilyState(_ family: DogFamily?) {
+        if let family = family {
             Task {
-                viewModel.didSelectDogBreed(breed)
+                viewModel.didSelectDogFamily(family)
             }
+        }
+    }
+    
+    @ViewBuilder
+    private func getDestinationView() -> some View {
+        if let destinationRoute = viewModel.destinationRoute {
+            switch destinationRoute {
+            case .images:
+                Text("Images")
+            case .subBreeds:
+                Text("SubBreeds")
+            default:
+                EmptyView()
+            }
+        } else {
+            EmptyView()
         }
     }
 }

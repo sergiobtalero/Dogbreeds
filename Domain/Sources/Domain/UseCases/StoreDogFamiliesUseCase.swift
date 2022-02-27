@@ -7,11 +7,11 @@
 
 import Foundation
 
-public protocol StoreDogBreedsUseCaseContract {
+public protocol StoreDogFamiliesUseCaseContract {
     func execute(dictionary: [String: [String]]) throws
 }
 
-public final class StoreDogBreedsUseCase {
+public final class StoreDogFamiliesUseCase {
     private let provider: DogBreedsPersistedProviderContract
     
     // MARK: - Initializer
@@ -21,7 +21,7 @@ public final class StoreDogBreedsUseCase {
 }
 
 // MARK: - DogBreedsPersistedProviderContract
-extension StoreDogBreedsUseCase: StoreDogBreedsUseCaseContract {
+extension StoreDogFamiliesUseCase: StoreDogFamiliesUseCaseContract {
     public func execute(dictionary: [String : [String]]) throws {
         try provider.storeDogBreeds(from: dictionary)
     }
