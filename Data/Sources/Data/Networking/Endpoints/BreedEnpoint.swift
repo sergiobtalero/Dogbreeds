@@ -12,7 +12,7 @@ enum BreedEndpoint: Endpoint {
     
     var path: String {
         switch self {
-        case let .images(dogBreed): return "/breed/\(dogBreed)/hound/images"
+        case let .images(dogBreed): return "/breed/\(dogBreed)/images"
         }
     }
     

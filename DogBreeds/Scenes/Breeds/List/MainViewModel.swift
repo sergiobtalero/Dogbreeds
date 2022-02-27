@@ -56,7 +56,7 @@ private extension MainViewModel {
     }
 }
 
-// MARK: - MainViewModelContract
+// MARK: - Public mehtods
 extension MainViewModel {
     struct Input {
         let retryButtonTapPublisher: AnyPublisher<Void, Never>

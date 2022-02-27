@@ -17,6 +17,9 @@ public protocol DogBreedsPersistedProviderContract {
     func fetchDogfamiliy(name: String) throws -> DogFamily
     func fetchDogBreedsCount() -> Int
     func storeDogBreeds(from dictionary: [String: [String]])
-    func updateDogBreed(_ dogBreed: String, images: [String]) throws
+    func getImagesOfBreed(_ dogBreed: String) -> [BreedImage]
+    func getImagesCountOfBreed(_ dogBreed: String) -> Int
+    func addImages(_ images: [String], dogBreedName: String) throws
+    func addImages(_ images: [String], dogFamilyName: String) throws
     func toggleDogBreedImageFavoriteStatus(_ image: String) throws
 }

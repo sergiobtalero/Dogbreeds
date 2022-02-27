@@ -14,7 +14,7 @@ class DogFamilyMapper: Mapper {
         
         if let inputBreeds = input.breeds {
             breeds = Array(inputBreeds).compactMap {
-                if let breedEntity = $0 as? DogBreedEntity {
+                if let breedEntity = $0 as? SubBreedEntity {
                     return DogBreedMapper.map(input: breedEntity)
                 } else {
                     return nil

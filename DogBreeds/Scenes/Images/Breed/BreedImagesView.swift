@@ -10,13 +10,45 @@ import SwiftUI
 struct BreedImagesView: View {
     @StateObject private var viewModel: BreedImagesViewModel
     
+    private let loadingView = LoadingView()
+    private let errorView = ErrorView()
+    
+    // MARK: - Initializer
     init(breedName: String) {
         _viewModel = StateObject(wrappedValue: BreedImagesViewModel(breedName: breedName))
     }
     
     // MARK: - Body
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Group {
+            switch viewModel.viewState {
+            case .loading:
+                loadingView
+            case .error:
+                errorView
+            case let .render(breedImages):
+                List {
+                    ForEach(breedImages) { breedImage in
+                        AsyncImage(url: breedImage.url)
+                    }
+                }
+            }
+        }
+        .navigationTitle("Images")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            Task {
+                await setupSubscriptions()
+            }
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension BreedImagesView {
+    private func setupSubscriptions() async {
+        let input = BreedImagesViewModel.Input(retryButtonTapPublisher: errorView.retryButtonTapPublisher)
+        await viewModel.bind(input)
     }
 }
 

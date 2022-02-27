@@ -84,7 +84,11 @@ private extension MainView {
         if let destinationRoute = viewModel.destinationRoute {
             switch destinationRoute {
             case .images:
-                Text("Images")
+                if let selectedDogFamily = selectedDogFamily {
+                    BreedImagesView(breedName: selectedDogFamily.name)
+                } else {
+                    EmptyView()
+                }
             case .subBreeds:
                 if let selectedDogFamily = selectedDogFamily {
                     SubBreedsView(family: selectedDogFamily)

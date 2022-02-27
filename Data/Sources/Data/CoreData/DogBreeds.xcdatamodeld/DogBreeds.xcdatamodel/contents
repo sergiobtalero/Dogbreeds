@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21D49" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="DogBreedEntity" representedClassName="Data.DogBreedEntity" syncable="YES" codeGenerationType="class">
+    <entity name="DogFamiliyEntity" representedClassName="DogFamiliyEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="breeds" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SubBreedEntity" inverseName="dogFamiliy" inverseEntity="SubBreedEntity"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DogImageEntity" inverseName="dogFamily" inverseEntity="DogImageEntity"/>
+    </entity>
+    <entity name="DogImageEntity" representedClassName="Data.DogImageEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="favorited" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="urlString" attributeType="String"/>
+        <relationship name="breed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SubBreedEntity" inverseName="images" inverseEntity="SubBreedEntity"/>
+        <relationship name="dogFamily" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DogFamiliyEntity" inverseName="images" inverseEntity="DogFamiliyEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="urlString"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="SubBreedEntity" representedClassName="Data.SubBreedEntity" syncable="YES" codeGenerationType="class">
         <attribute name="name" attributeType="String"/>
         <relationship name="dogFamiliy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DogFamiliyEntity" inverseName="breeds" inverseEntity="DogFamiliyEntity"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DogImageEntity" inverseName="breed" inverseEntity="DogImageEntity"/>
@@ -10,23 +26,9 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="DogFamiliyEntity" representedClassName="DogFamiliyEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="breeds" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DogBreedEntity" inverseName="dogFamiliy" inverseEntity="DogBreedEntity"/>
-    </entity>
-    <entity name="DogImageEntity" representedClassName="Data.DogImageEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="favorited" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="urlString" attributeType="String"/>
-        <relationship name="breed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DogBreedEntity" inverseName="images" inverseEntity="DogBreedEntity"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="urlString"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
     <elements>
-        <element name="DogBreedEntity" positionX="-54" positionY="-9" width="128" height="74"/>
-        <element name="DogImageEntity" positionX="-54" positionY="9" width="128" height="74"/>
-        <element name="DogFamiliyEntity" positionX="-45" positionY="27" width="128" height="59"/>
+        <element name="SubBreedEntity" positionX="214.8359985351562" positionY="270.7721862792969" width="128" height="88"/>
+        <element name="DogImageEntity" positionX="-228.5459594726562" positionY="492.7909240722656" width="128" height="89"/>
+        <element name="DogFamiliyEntity" positionX="-289.890380859375" positionY="-46.24462890625" width="128" height="88"/>
     </elements>
 </model>

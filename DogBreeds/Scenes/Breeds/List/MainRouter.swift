@@ -15,11 +15,7 @@ protocol MainRouterContract {
 
 final class MainRouter: MainRouterContract {
     func getRouteForDogFamily(_ family: DogFamily,
-                              currentRoute: Route?) -> Route {
-//        guard let currentRoute = currentRoute else {
-//            return family.breeds.isEmpty ? .images(family, true) : .subBreeds(family, true)
-//        }
-        
+                              currentRoute: Route?) -> Route {        
         var newForceValue: Bool
         if case let .images(_, oldForceValue) = currentRoute {
             newForceValue = !oldForceValue

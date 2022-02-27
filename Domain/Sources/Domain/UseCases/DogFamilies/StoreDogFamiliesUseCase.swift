@@ -23,6 +23,6 @@ public final class StoreDogFamiliesUseCase {
 // MARK: - DogBreedsPersistedProviderContract
 extension StoreDogFamiliesUseCase: StoreDogFamiliesUseCaseContract {
     public func execute(dictionary: [String : [String]]) throws {
-        try provider.storeDogBreeds(from: dictionary)
+        provider.storeDogBreeds(from: dictionary)
     }
 }
