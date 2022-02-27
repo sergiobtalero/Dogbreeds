@@ -83,7 +83,11 @@ private extension MainView {
             case .images:
                 Text("Images")
             case .subBreeds:
-                Text("SubBreeds")
+                if let selectedDogFamily = selectedDogFamily {
+                    SubBreedsView(family: selectedDogFamily)
+                } else {
+                    EmptyView()
+                }
             default:
                 EmptyView()
             }
