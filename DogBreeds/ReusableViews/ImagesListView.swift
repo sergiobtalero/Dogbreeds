@@ -10,18 +10,14 @@ import Combine
 import Domain
 
 struct ImagesListView: View {
-    private let likeTapInternalPublisher = PassthroughSubject<BreedImage, Never>()
+    @Binding var images: [BreedImage]
+    
+    let likeTapPublisher: PassthroughSubject<BreedImage, Never>
     
     private let columns: [GridItem] = [
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
-    
-    let images: [BreedImage]
-    
-    var likeTapPublisher: AnyPublisher<BreedImage, Never> {
-        likeTapInternalPublisher.eraseToAnyPublisher()
-    }
     
     // MARK: - Body
     var body: some View {
@@ -42,7 +38,7 @@ struct ImagesListView: View {
                             }
                             
                             Button {
-                                likeTapInternalPublisher.send(element)
+                                likeTapPublisher.send(element)
                             } label: {
                                 Image(systemName: element.isFavorite ? "heart.fill" : "heart")
                                     .foregroundColor(.yellow)
@@ -79,6 +75,6 @@ struct ImagesListView_Previews: PreviewProvider {
         BreedImage(url: URL(string: "https://images.dog.ceo/breeds/affenpinscher/n02110627_10859.jpg")!, isFavorite: false)
     ]
     static var previews: some View {
-        ImagesListView(images: Self.images)
+        ImagesListView(images: .constant(Self.images), likeTapPublisher: PassthroughSubject<BreedImage, Never>())
     }
 }
