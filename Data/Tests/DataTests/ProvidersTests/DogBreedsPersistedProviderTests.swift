@@ -50,8 +50,7 @@ class DogBreedsPersistedProviderTests: XCTestCase {
         
         sut.storeDogBreeds(from: dogBreedsDictionary)
         let count = sut.fetchDogBreedsCount()
-        let dogBreeds = sut.fetchDogBreeds()
-        XCTAssertEqual(count, dogBreeds.count)
+        XCTAssertEqual(count, 79)
     }
 
     func testUpdateDogBreedsImages_successfully() throws {
@@ -65,19 +64,14 @@ class DogBreedsPersistedProviderTests: XCTestCase {
         let sut = DogBreedsPersistedProvider(coreDataManager: coreDataManager)
         
         sut.storeDogBreeds(from: dogBreedsDictionary)
-        guard let testDogBreed = sut.fetchDogBreeds().first else {
-            XCTFail("Failed to load dog breeds")
-            return
-        }
-        
-        try sut.updateDogBreed(testDogBreed.name, images: ["http://www.test.com",
-                                                           "http://www.test2.com",
-                                                           "http://www.test3.com"])
-        let images = try sut.fetchDogBreed(name: testDogBreed.name).images.sorted(by: { $0.url.absoluteString < $1.url.absoluteString })
-        XCTAssertEqual(images.count, 3)
-        XCTAssertEqual(images[0].url.absoluteString, "http://www.test.com")
-        XCTAssertEqual(images[1].url.absoluteString, "http://www.test2.com")
-        XCTAssertEqual(images[2].url.absoluteString, "http://www.test3.com")
+        let images = ["http://www.test.com",
+                      "http://www.test2.com",
+                      "http://www.test3.com"]
+        let testDog = sut.fetchDogFamilies().first(where: { !$0.breeds.isEmpty })!.breeds.first!
+        print(testDog)
+        try sut.addImages(images, dogBreedName: testDog.name)
+        let dogImages = sut.getImagesOfBreed(testDog.name)
+        XCTAssertEqual(dogImages.count, 3)
     }
     
     func testToggleDogBreedsImageFavoriteStatus_successfully() throws {
@@ -89,21 +83,20 @@ class DogBreedsPersistedProviderTests: XCTestCase {
               }
         let dogBreedsDictionary = dictionary.message
         let sut = DogBreedsPersistedProvider(coreDataManager: coreDataManager)
-        
+
         sut.storeDogBreeds(from: dogBreedsDictionary)
-        guard let testDogBreed = sut.fetchDogBreeds().first else {
+        guard let testDogBreed = sut.fetchDogFamilies().first else {
             XCTFail("Failed to load dog breeds")
             return
         }
-        
-        try sut.updateDogBreed(testDogBreed.name, images: ["http://www.test.com",
-                                                           "http://www.test2.com",
-                                                           "http://www.test3.com"])
+        let images = ["http://www.test.com",
+                      "http://www.test2.com",
+                      "http://www.test3.com"]
+        let testDog = sut.fetchDogFamilies().first(where: { $0.breeds.isEmpty })!
+        try sut.addImages(images, dogFamilyName: testDog.name)
         try sut.toggleDogBreedImageFavoriteStatus("http://www.test.com")
-        if let image = try sut.fetchDogBreed(name: testDogBreed.name).images.first(where: { $0.url.absoluteString == "http://www.test.com" }) {
-            XCTAssertTrue(image.isFavorite)
-        } else {
-            XCTFail("Could not find image")
-        }
+        
+        let dogImagesimages = try sut.getFavoritedImages()
+        XCTAssertTrue(dogImagesimages.contains(where: { $0.url.absoluteString == "http://www.test.com" }))
     }
 }
