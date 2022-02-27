@@ -12,6 +12,7 @@ import Domain
 
 @MainActor final class BreedImagesViewModel: ObservableObject {
     @Injected private var fetchDogImagesFromRemoteOrLocaUseCase: FetchDogImagesFromRemoteOrLocalUseCaseContract
+    @Injected private var toggleLikeStatusOfDogImageUseCase: ToggleLikeStatusOfDogImageUseCaseContract
     
     private let breedName: String
     private var subscriptions = Set<AnyCancellable>()
@@ -50,9 +51,19 @@ private extension BreedImagesViewModel {
         viewState = .loading
         do {
             let breedImages = try await fetchDogImagesFromRemoteOrLocaUseCase.execute(dogBreedName: breedName)
-            viewState = .render(breedImages)
+            let sortedBreedImages = breedImages.sorted(by: { $0.url.absoluteString < $1.url.absoluteString })
+            viewState = .render(sortedBreedImages)
         } catch {
             viewState = .error
+        }
+    }
+    
+    private func toggleImageLikeStatus(image: BreedImage) {
+        do {
+            try toggleLikeStatusOfDogImageUseCase.execute(breedImage: image)
+            viewState.toggleLikeStatus(image: image)
+        } catch {
+            print(error.localizedDescription)
         }
     }
 }
@@ -87,7 +98,7 @@ private extension BreedImagesViewModel {
     private func observeLikeButtonTapPublisher(_ publisher: AnyPublisher<BreedImage, Never>) {
         publisher
             .sink { [weak self] image in
-                self?.viewState.toggleLikeStatus(image: image)
+                self?.toggleImageLikeStatus(image: image)
             }
             .store(in: &subscriptions)
     }
