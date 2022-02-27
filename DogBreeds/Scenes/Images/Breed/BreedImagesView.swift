@@ -35,7 +35,7 @@ struct BreedImagesView: View {
                 makeImagesListView(breedImages: breedImages)
             }
         }
-        .navigationTitle("Images")
+        .navigationTitle("\(viewModel.displayingBreedName.capitalized) Photos")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             Task {

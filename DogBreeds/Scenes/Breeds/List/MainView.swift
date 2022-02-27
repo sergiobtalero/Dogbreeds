@@ -28,6 +28,7 @@ struct MainView: View {
                         loadingView
                     case let .render(dogFamilies):
                         DogBreedsListView(selectedBreed: $selectedDogFamily, breeds: dogFamilies)
+                            
                     case .error:
                         errorView
                     }

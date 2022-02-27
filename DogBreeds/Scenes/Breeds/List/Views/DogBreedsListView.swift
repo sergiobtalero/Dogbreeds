@@ -10,13 +10,22 @@ import Domain
 
 struct DogBreedsListView: View {
     @Binding var selectedBreed: DogFamily?
+    @State private var searchText = ""
     
     var breeds: [DogFamily]
+    
+    private var searchResults: [DogFamily] {
+        if searchText.isEmpty {
+            return breeds
+        } else {
+            return breeds.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+        }
+    }
     
     // MARK: - Body
     var body: some View {
         List {
-            ForEach(breeds) { breed in
+            ForEach(searchResults) { breed in
                 HStack {
                     Text(breed.name.capitalized)
                     Spacer()
@@ -27,6 +36,7 @@ struct DogBreedsListView: View {
                 }
             }
         }
+        .searchable(text: $searchText)
     }
 }
 

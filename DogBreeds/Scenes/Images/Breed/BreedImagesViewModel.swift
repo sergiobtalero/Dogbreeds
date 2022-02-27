@@ -18,10 +18,12 @@ import Domain
     private var subscriptions = Set<AnyCancellable>()
     
     @Published var viewState = ViewState.loading
+    @Published var displayingBreedName = ""
     
     // MARK: - Initializer
     init(breedName: String) {
         self.breedName = breedName
+        displayingBreedName = breedName
     }
 }
 

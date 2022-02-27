@@ -23,7 +23,7 @@ struct SubBreedsView: View {
                 Text(subBreed.name.capitalized)
             }
         }
-        .navigationTitle("SubBreeds of \(viewModel.familyName)")
+        .navigationTitle("\(viewModel.familyName.capitalized) Breeds")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
