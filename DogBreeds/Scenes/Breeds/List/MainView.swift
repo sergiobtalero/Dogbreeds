@@ -13,6 +13,7 @@ struct MainView: View {
     @StateObject var viewModel = MainViewModel()
     @State private var selectedDogFamily: DogFamily?
     @State private var isRouteSet = false
+    @State private var showFavorites = false
     
     private let loadingView = LoadingView()
     private let errorView = ErrorView()
@@ -42,13 +43,18 @@ struct MainView: View {
                 } label: {
                     EmptyView()
                 }
-
+                
+                NavigationLink(isActive: $showFavorites) {
+                    FavoritesView()
+                } label: {
+                    EmptyView()
+                }
             }
             .navigationTitle("Dog Breeds")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Favorites") {
-                        print("User tapped favorites")
+                        showFavorites = true
                     }
                     .foregroundColor(.yellow)
                 }
@@ -97,8 +103,6 @@ private extension MainView {
                 } else {
                     EmptyView()
                 }
-            default:
-                EmptyView()
             }
         } else {
             EmptyView()

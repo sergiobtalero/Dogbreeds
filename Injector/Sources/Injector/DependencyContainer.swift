@@ -47,6 +47,7 @@ extension DependencyContainer {
         Self.registerUpdateDogBreedWithImagesUseCase()
         Self.registerFetchDogImagesFromRemoteOrLocalUseCase()
         Self.registerToggleLikeStatusOfDogImageUseCase()
+        Self.registerGetFavoritedImagesUseCase()
     }
 }
 
@@ -128,5 +129,11 @@ private extension DependencyContainer {
         let provider = DogBreedsPersistedProvider(coreDataManager: CoreDataManager.shared)
         let useCase = ToggleLikeStatusOfDogImageUseCase(dogBreedsPersistedProvider: provider)
         shared.register(useCase as ToggleLikeStatusOfDogImageUseCaseContract)
+    }
+    
+    private static func registerGetFavoritedImagesUseCase() {
+        let provider = DogBreedsPersistedProvider(coreDataManager: CoreDataManager.shared)
+        let useCase = GetFavoritedImagesUseCase(dogBreedsPersistedProvider: provider)
+        shared.register(useCase as GetFavoritedImagesUseCaseContract)
     }
 }

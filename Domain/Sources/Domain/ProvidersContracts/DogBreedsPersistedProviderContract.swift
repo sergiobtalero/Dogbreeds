@@ -22,4 +22,5 @@ public protocol DogBreedsPersistedProviderContract {
     func addImages(_ images: [String], dogBreedName: String) throws
     func addImages(_ images: [String], dogFamilyName: String) throws
     func toggleDogBreedImageFavoriteStatus(_ image: String) throws
+    func getFavoritedImages() -> [BreedImage]
 }

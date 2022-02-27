@@ -166,4 +166,16 @@ extension DogBreedsPersistedProvider: DogBreedsPersistedProviderContract {
         
         try? coreDataManager.viewContext.save()
     }
+    
+    public func getFavoritedImages() -> [BreedImage] {
+        let fetchRequest = DogImageEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(DogImageEntity.favorited), NSNumber(value: true))
+        
+        do {
+            let entities = try coreDataManager.viewContext.fetch(fetchRequest)
+            return entities.compactMap { BreedImageMapper.map(input: $0) }
+        } catch {
+            return []
+        }
+    }
 }

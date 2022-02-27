@@ -34,12 +34,9 @@ extension MainRouter {
     enum Route: Equatable {
         case images(DogFamily, Bool)
         case subBreeds(DogFamily, Bool)
-        case favorites(Bool)
         
         static func ==(lhs: Route, rhs: Route) -> Bool {
             switch (lhs, rhs) {
-            case (.favorites, .favorites):
-                return true
             case (let .images(dogFamilyA, forceValueA), let .images(dogFamilyB, forceValueB)):
                 return dogFamilyA == dogFamilyB && forceValueA == forceValueB
             case (let .subBreeds(dogFamilyA, forceValueA), let .subBreeds(dogFamilyB, forceValueB)):
