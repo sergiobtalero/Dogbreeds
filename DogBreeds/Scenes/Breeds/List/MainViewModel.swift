@@ -75,6 +75,7 @@ extension MainViewModel {
     }
     
     func didSelectDogFamily(_ family: DogFamily) {
-        destinationRoute = router.getRouteForDogFamily(family)
+        let newRoute = router.getRouteForDogFamily(family, currentRoute: destinationRoute)
+        destinationRoute = newRoute
     }
 }

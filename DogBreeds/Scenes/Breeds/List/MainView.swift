@@ -35,6 +35,9 @@ struct MainView: View {
                 
                 NavigationLink(isActive: $isRouteSet) {
                     getDestinationView()
+                        .onDisappear {
+                            selectedDogFamily = nil
+                        }
                 } label: {
                     EmptyView()
                 }
