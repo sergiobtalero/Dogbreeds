@@ -27,11 +27,7 @@ struct BreedImagesView: View {
             case .error:
                 errorView
             case let .render(breedImages):
-                List {
-                    ForEach(breedImages) { breedImage in
-                        AsyncImage(url: breedImage.url)
-                    }
-                }
+                ImagesListView(images: breedImages)
             }
         }
         .navigationTitle("Images")
