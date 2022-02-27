@@ -14,6 +14,7 @@ import Domain
     @Published var familyName = ""
     @Published var subBreeds: [DogBreed] = []
     
+    // MARK: - Initializer
     init(dogFamily: DogFamily) {
         self.dogFamily = dogFamily
         
