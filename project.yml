@@ -26,3 +26,7 @@ targets:
     deploymentTarget: "15.2"
     sources:
       - path: DogBreedsTests
+    dependencies:
+      - target: DogBreeds
+      - package: Domain
+      - package: Injector

@@ -29,7 +29,7 @@ import Domain
 
 // MARK: - View State
 extension MainViewModel {
-    enum ViewState {
+    enum ViewState: Equatable {
         case notStarted
         case loading
         case render([DogFamily])
